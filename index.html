@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/Control.OSMGeocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet-src.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/Control.OSMGeocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/PracticasProfesionales_2.js"></script>
+        <script src="data/PracticasIntermedias_3.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:3
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        L.control.locate().addTo(map);
+        var measureControl = new L.Control.Measure({
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        var basemap1 = L.tileLayer('http://a.tile.stamen.com/toner/{z}/{x}/{y}.png', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Mapdata: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap1.addTo(map);
+        var basemap2 = L.tileLayer('http://a.tile.stamen.com/terrain/{z}/{x}/{y}.png', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash;Map data: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap2.addTo(map);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        var img_MapadeCalorPrcticaProfesional_0 = 'data/MapadeCalorPrcticaProfesional_0.png';
+        var img_bounds_MapadeCalorPrcticaProfesional_0 = [[-34.6644384238,-71.3956680484],[-33.3809733706,-70.5098605371]];
+        var overlay_MapadeCalorPrcticaProfesional_0 = new L.imageOverlay(img_MapadeCalorPrcticaProfesional_0, img_bounds_MapadeCalorPrcticaProfesional_0);
+        bounds_group.addLayer(overlay_MapadeCalorPrcticaProfesional_0);
+        map.addLayer(overlay_MapadeCalorPrcticaProfesional_0);
+        var img_MapadeCalorPrcticaIntermedia_1 = 'data/MapadeCalorPrcticaIntermedia_1.png';
+        var img_bounds_MapadeCalorPrcticaIntermedia_1 = [[-33.6551150626,-70.9071953358],[-33.3264469877,-70.5115195103]];
+        var overlay_MapadeCalorPrcticaIntermedia_1 = new L.imageOverlay(img_MapadeCalorPrcticaIntermedia_1, img_bounds_MapadeCalorPrcticaIntermedia_1);
+        bounds_group.addLayer(overlay_MapadeCalorPrcticaIntermedia_1);
+        map.addLayer(overlay_MapadeCalorPrcticaIntermedia_1);
+        function pop_PracticasProfesionales_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Estudiante</th>\
+                        <td>' + (feature.properties['Estudiante'] !== null ? Autolinker.link(String(feature.properties['Estudiante'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Docente</th>\
+                        <td>' + (feature.properties['Docente'] !== null ? Autolinker.link(String(feature.properties['Docente'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">tema</th>\
+                        <td>' + (feature.properties['tema'] !== null ? Autolinker.link(String(feature.properties['tema'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Institución</th>\
+                        <td>' + (feature.properties['Institución'] !== null ? Autolinker.link(String(feature.properties['Institución'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dirección</th>\
+                        <td>' + (feature.properties['Dirección'] !== null ? Autolinker.link(String(feature.properties['Dirección'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Comuna</th>\
+                        <td>' + (feature.properties['Comuna'] !== null ? Autolinker.link(String(feature.properties['Comuna'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">País</th>\
+                        <td>' + (feature.properties['País'] !== null ? Autolinker.link(String(feature.properties['País'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Supervisor</th>\
+                        <td>' + (feature.properties['Supervisor'] !== null ? Autolinker.link(String(feature.properties['Supervisor'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Teléfono</th>\
+                        <td>' + (feature.properties['Teléfono'] !== null ? Autolinker.link(String(feature.properties['Teléfono'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">E-Mail Sup</th>\
+                        <td>' + (feature.properties['E-Mail Sup'] !== null ? Autolinker.link(String(feature.properties['E-Mail Sup'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Antiguedad</th>\
+                        <td>' + (feature.properties['Antiguedad'] !== null ? Autolinker.link(String(feature.properties['Antiguedad'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PracticasProfesionales_2_0() {
+            return {
+                pane: 'pane_PracticasProfesionales_2',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/pink-marker.svg',
+            iconSize: [22.8, 22.8]
+        }),
+            }
+        }
+        map.createPane('pane_PracticasProfesionales_2');
+        map.getPane('pane_PracticasProfesionales_2').style.zIndex = 402;
+        map.getPane('pane_PracticasProfesionales_2').style['mix-blend-mode'] = 'normal';
+        var layer_PracticasProfesionales_2 = new L.geoJson(json_PracticasProfesionales_2, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_PracticasProfesionales_2',
+            onEachFeature: pop_PracticasProfesionales_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_PracticasProfesionales_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PracticasProfesionales_2);
+        map.addLayer(layer_PracticasProfesionales_2);
+        function pop_PracticasIntermedias_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Práctica</th>\
+                        <td>' + (feature.properties['Práctica'] !== null ? Autolinker.link(String(feature.properties['Práctica'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Vacantes</th>\
+                        <td>' + (feature.properties['Vacantes'] !== null ? Autolinker.link(String(feature.properties['Vacantes'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Docente</th>\
+                        <td>' + (feature.properties['Docente'] !== null ? Autolinker.link(String(feature.properties['Docente'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Intitución</th>\
+                        <td>' + (feature.properties['Intitución'] !== null ? Autolinker.link(String(feature.properties['Intitución'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dirección</th>\
+                        <td>' + (feature.properties['Dirección'] !== null ? Autolinker.link(String(feature.properties['Dirección'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Comuna</th>\
+                        <td>' + (feature.properties['Comuna'] !== null ? Autolinker.link(String(feature.properties['Comuna'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Antiguedad</th>\
+                        <td>' + (feature.properties['Antiguedad'] !== null ? Autolinker.link(String(feature.properties['Antiguedad'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tema</th>\
+                        <td>' + (feature.properties['Tema'] !== null ? Autolinker.link(String(feature.properties['Tema'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Supervisor</th>\
+                        <td>' + (feature.properties['Supervisor'] !== null ? Autolinker.link(String(feature.properties['Supervisor'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Profesión</th>\
+                        <td>' + (feature.properties['Profesión'] !== null ? Autolinker.link(String(feature.properties['Profesión'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Teléfono</th>\
+                        <td>' + (feature.properties['Teléfono'] !== null ? Autolinker.link(String(feature.properties['Teléfono'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">E-Mail Sup</th>\
+                        <td>' + (feature.properties['E-Mail Sup'] !== null ? Autolinker.link(String(feature.properties['E-Mail Sup'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PracticasIntermedias_3_0() {
+            return {
+                pane: 'pane_PracticasIntermedias_3',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/blue-marker.svg',
+            iconSize: [26.6, 26.6]
+        }),
+            }
+        }
+        map.createPane('pane_PracticasIntermedias_3');
+        map.getPane('pane_PracticasIntermedias_3').style.zIndex = 403;
+        map.getPane('pane_PracticasIntermedias_3').style['mix-blend-mode'] = 'normal';
+        var layer_PracticasIntermedias_3 = new L.geoJson(json_PracticasIntermedias_3, {
+            attribution: '<a href=""></a>',
+            pane: 'pane_PracticasIntermedias_3',
+            onEachFeature: pop_PracticasIntermedias_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_PracticasIntermedias_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PracticasIntermedias_3);
+        map.addLayer(layer_PracticasIntermedias_3);
+        var osmGeocoder = new L.Control.OSMGeocoder({
+            collapsed: false,
+            position: 'topright',
+            text: 'Search',
+        });
+        osmGeocoder.addTo(map);
+        var baseMaps = {'OSM': basemap0, 'Stamen Toner': basemap1, 'Stamen Terrain': basemap2};
+        L.control.layers(baseMaps,{'<img src="legend/PracticasIntermedias_3.png" /> Practicas Intermedias': layer_PracticasIntermedias_3,'<img src="legend/PracticasProfesionales_2.png" /> Practicas Profesionales': layer_PracticasProfesionales_2,"Mapa de Calor Práctica Intermedia": overlay_MapadeCalorPrcticaIntermedia_1,"Mapa de Calor Práctica Profesional": overlay_MapadeCalorPrcticaProfesional_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>
